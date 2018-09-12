@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="NetLite">
+      <UniqueIdentifier>{b6a516df-879f-4dd7-b06d-eee9673edc8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetLite\ip">
+      <UniqueIdentifier>{5fbe1af1-efb2-4842-83ca-d5c8fd265f00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetLite\io_services">
+      <UniqueIdentifier>{46a0ff9a-f5b5-4b59-a81e-c5558738307a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\NetLite\ip\address.hpp">
+      <Filter>NetLite\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\ip\address_v4.hpp">
+      <Filter>NetLite\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\ip\address_v4_iterator.hpp">
+      <Filter>NetLite\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\ip\address_v4_range.hpp">
+      <Filter>NetLite\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\ip\address_v6.hpp">
+      <Filter>NetLite\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\ip\address_v6_iterator.hpp">
+      <Filter>NetLite\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\ip\address_v6_range.hpp">
+      <Filter>NetLite\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\ip\bad_address_cast.hpp">
+      <Filter>NetLite\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\ip\endpoint.hpp">
+      <Filter>NetLite\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\ip\multicast.hpp">
+      <Filter>NetLite\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\basic_endpoint.hpp">
+      <Filter>NetLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\basic_socket.hpp">
+      <Filter>NetLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\config.hpp">
+      <Filter>NetLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\net_error_code.hpp">
+      <Filter>NetLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\socket_base.hpp">
+      <Filter>NetLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\socket_ops.hpp">
+      <Filter>NetLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\socket_option.hpp">
+      <Filter>NetLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\socket_types.hpp">
+      <Filter>NetLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\tcp.hpp">
+      <Filter>NetLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\udp.hpp">
+      <Filter>NetLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\winsock_init.hpp">
+      <Filter>NetLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\NetLite.hpp">
+      <Filter>NetLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\io_services\win_iocp_io_context.hpp">
+      <Filter>NetLite\io_services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\io_services\win_iocp_operation.hpp">
+      <Filter>NetLite\io_services</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\NetLite\ip\address.ipp">
+      <Filter>NetLite\ip</Filter>
+    </None>
+    <None Include="..\NetLite\ip\address_v4.ipp">
+      <Filter>NetLite\ip</Filter>
+    </None>
+    <None Include="..\NetLite\ip\address_v6.ipp">
+      <Filter>NetLite\ip</Filter>
+    </None>
+    <None Include="..\NetLite\ip\endpoint.ipp">
+      <Filter>NetLite\ip</Filter>
+    </None>
+    <None Include="..\NetLite\socket_ops.ipp">
+      <Filter>NetLite</Filter>
+    </None>
+    <None Include="..\NetLite\winsock_init.ipp">
+      <Filter>NetLite</Filter>
+    </None>
+    <None Include="..\NetLite\io_services\win_iocp_io_context.cpp">
+      <Filter>NetLite\io_services</Filter>
+    </None>
+  </ItemGroup>
+</Project>

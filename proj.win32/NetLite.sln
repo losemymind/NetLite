@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetLite", "NetLite.vcxproj", "{F7AE35B3-C5F4-4CB7-8BB9-7F46406BF244}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetLiteClient", "NetLiteClient\NetLiteClient.vcxproj", "{33FDAFC2-2BC6-45F5-8036-25814F692F0D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetLiteServer", "NetLiteServer\NetLiteServer.vcxproj", "{765DE557-7828-46CF-8017-76C1B5887597}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F7AE35B3-C5F4-4CB7-8BB9-7F46406BF244}.Debug|x64.ActiveCfg = Debug|x64
+		{F7AE35B3-C5F4-4CB7-8BB9-7F46406BF244}.Debug|x64.Build.0 = Debug|x64
+		{F7AE35B3-C5F4-4CB7-8BB9-7F46406BF244}.Debug|x86.ActiveCfg = Debug|Win32
+		{F7AE35B3-C5F4-4CB7-8BB9-7F46406BF244}.Debug|x86.Build.0 = Debug|Win32
+		{F7AE35B3-C5F4-4CB7-8BB9-7F46406BF244}.Release|x64.ActiveCfg = Release|x64
+		{F7AE35B3-C5F4-4CB7-8BB9-7F46406BF244}.Release|x64.Build.0 = Release|x64
+		{F7AE35B3-C5F4-4CB7-8BB9-7F46406BF244}.Release|x86.ActiveCfg = Release|Win32
+		{F7AE35B3-C5F4-4CB7-8BB9-7F46406BF244}.Release|x86.Build.0 = Release|Win32
+		{33FDAFC2-2BC6-45F5-8036-25814F692F0D}.Debug|x64.ActiveCfg = Debug|x64
+		{33FDAFC2-2BC6-45F5-8036-25814F692F0D}.Debug|x64.Build.0 = Debug|x64
+		{33FDAFC2-2BC6-45F5-8036-25814F692F0D}.Debug|x86.ActiveCfg = Debug|Win32
+		{33FDAFC2-2BC6-45F5-8036-25814F692F0D}.Debug|x86.Build.0 = Debug|Win32
+		{33FDAFC2-2BC6-45F5-8036-25814F692F0D}.Release|x64.ActiveCfg = Release|x64
+		{33FDAFC2-2BC6-45F5-8036-25814F692F0D}.Release|x64.Build.0 = Release|x64
+		{33FDAFC2-2BC6-45F5-8036-25814F692F0D}.Release|x86.ActiveCfg = Release|Win32
+		{33FDAFC2-2BC6-45F5-8036-25814F692F0D}.Release|x86.Build.0 = Release|Win32
+		{765DE557-7828-46CF-8017-76C1B5887597}.Debug|x64.ActiveCfg = Debug|x64
+		{765DE557-7828-46CF-8017-76C1B5887597}.Debug|x64.Build.0 = Debug|x64
+		{765DE557-7828-46CF-8017-76C1B5887597}.Debug|x86.ActiveCfg = Debug|Win32
+		{765DE557-7828-46CF-8017-76C1B5887597}.Debug|x86.Build.0 = Debug|Win32
+		{765DE557-7828-46CF-8017-76C1B5887597}.Release|x64.ActiveCfg = Release|x64
+		{765DE557-7828-46CF-8017-76C1B5887597}.Release|x64.Build.0 = Release|x64
+		{765DE557-7828-46CF-8017-76C1B5887597}.Release|x86.ActiveCfg = Release|Win32
+		{765DE557-7828-46CF-8017-76C1B5887597}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
