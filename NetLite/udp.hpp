@@ -2,7 +2,6 @@
 #ifndef NETLITE_UDP_HPP
 #define NETLITE_UDP_HPP
 
-
 #include "NetLite/basic_socket.hpp"
 #include "NetLite/basic_endpoint.hpp"
 #include "NetLite/socket_base.hpp"
