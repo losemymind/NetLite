@@ -1,9 +1,4 @@
-/****************************************************************************
-  Copyright (c) 2018 libo All rights reserved.
-  
-  losemymind.libo@gmail.com
 
-****************************************************************************/
 #ifndef NETLITE_ADDRESS_V4_ITERATOR_HPP
 #define NETLITE_ADDRESS_V4_ITERATOR_HPP
 

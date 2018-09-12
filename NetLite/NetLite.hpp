@@ -1,9 +1,4 @@
-/****************************************************************************
-  Copyright (c) 2018 libo All rights reserved.
-  
-  losemymind.libo@gmail.com
 
-****************************************************************************/
 #ifndef NETLITE_NETLITE_HPP
 #define NETLITE_NETLITE_HPP
 

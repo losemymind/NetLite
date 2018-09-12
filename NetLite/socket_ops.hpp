@@ -1,9 +1,4 @@
-/****************************************************************************
-  Copyright (c) 2018 libo All rights reserved.
-  
-  losemymind.libo@gmail.com
 
-****************************************************************************/
 #ifndef NETLITE_SOCKET_OPS_HPP
 #define NETLITE_SOCKET_OPS_HPP
 

@@ -1,9 +1,4 @@
-/****************************************************************************
-  Copyright (c) 2018 libo All rights reserved.
-  
-  losemymind.libo@gmail.com
 
-****************************************************************************/
 #ifndef NETLITE_NET_ERROR_CODE_HPP
 #define NETLITE_NET_ERROR_CODE_HPP
 
