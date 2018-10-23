@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cerrno>
+#include <cassert>
 #include <new>
 #include "NetLite/socket_ops.hpp"
 #include "NetLite/net_error_code.hpp"
@@ -1969,6 +1970,69 @@ int gethostname(char* name, int namelen, std::error_code& ec)
     ec = std::error_code();
 # endif // defined(_WIN32)
   return result;
+}
+
+NETWORK_API struct hostent* gethostbyname(const char* name, std::error_code& ec)
+{
+    clear_last_error();
+    struct hostent* result = error_wrapper(::gethostbyname(name), ec);
+    return result;
+}
+
+NETWORK_API bool resolve(const char* hostname, struct sockaddr_in6 *out, std::error_code& ec)
+{
+    clear_last_error();
+    struct hostent *phent = nullptr;
+#if defined(__linux__)
+    struct hostent hent;
+    memset(&hent, 0, sizeof(hent));
+    int32_t herrno = 0;
+    char buffer[64 * 1024] = { 0 };
+    int32_t ret = ::gethostbyname_r(hostname.data(), &hent, buffer, sizeof buffer, &phent, &herrno);
+    if (ret == 0 && phent != nullptr)
+    {
+        assert(phent->h_addrtype == AF_INET6);
+        out->sin6_addr = *reinterpret_cast<struct in6_addr*>(phent->h_addr);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+#else
+    phent = error_wrapper(::gethostbyname(hostname), ec);
+    assert(phent->h_addrtype == AF_INET6);
+    out->sin6_addr = *reinterpret_cast<struct in6_addr*>(phent->h_addr);
+    return true;
+#endif
+}
+
+NETWORK_API bool resolve(const char* hostname, struct sockaddr_in *out, std::error_code& ec)
+{
+    clear_last_error();
+    struct hostent *phent = nullptr;
+#if defined(__linux__)
+    struct hostent hent;
+    memset(&hent, 0, sizeof(hent));
+    int32_t herrno = 0;
+    char buffer[64 * 1024] = { 0 };
+    int32_t ret = ::gethostbyname_r(hostname.data(), &hent, buffer, sizeof buffer, &phent, &herrno);
+    if (ret == 0 && phent != nullptr)
+    {
+        assert(phent->h_addrtype == AF_INET);
+        out->sin_addr = *reinterpret_cast<struct in_addr*>(phent->h_addr);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+#else
+    phent = error_wrapper(::gethostbyname(hostname), ec);
+    assert(phent->h_addrtype == AF_INET);
+    out->sin_addr = *reinterpret_cast<struct in_addr*>(phent->h_addr);
+    return true;
+#endif
 }
 
 inline std::error_code translate_addrinfo_error(int error)

@@ -206,8 +206,12 @@ NETWORK_API const char* inet_ntop(int af, const void* src, char* dest,
 NETWORK_API int inet_pton(int af, const char* src, void* dest,
     unsigned long* scope_id, std::error_code& ec);
 
-NETWORK_API int gethostname(char* name,
-    int namelen, std::error_code& ec);
+NETWORK_API int gethostname(char* name, int namelen, std::error_code& ec);
+
+NETWORK_API struct hostent* gethostbyname(const char* name, std::error_code& ec);
+
+NETWORK_API bool resolve(const char* hostname, struct sockaddr_in6 *out, std::error_code& ec);
+NETWORK_API bool resolve(const char* hostname, struct sockaddr_in *out, std::error_code& ec);
 
 NETWORK_API std::error_code getaddrinfo(const char* host,
     const char* service, const addrinfo_type& hints,

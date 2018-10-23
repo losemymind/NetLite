@@ -419,7 +419,7 @@ public:
         {
             socket_ops::buf sendBuf;
             socket_ops::init_buf(sendBuf, buffers.data(), buffers.size());
-            return socket_ops::send(native_handle(),&sendBuf ,buffers.size(), flags, ec);
+            return socket_ops::send(native_handle(),&sendBuf ,1, flags, ec);
         }
         else
         {
@@ -492,7 +492,7 @@ public:
         {
             socket_ops::buf recvBuf;
             socket_ops::init_buf(recvBuf, buffers.data(), buffers.size());
-            return socket_ops::recv(native_handle(), &recvBuf, buffers.size(), flags, ec);
+            return socket_ops::recv(native_handle(), &recvBuf, 1, flags, ec);
         }
         else
         {
