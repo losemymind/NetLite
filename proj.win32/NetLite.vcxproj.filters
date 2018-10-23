@@ -22,6 +22,9 @@
     <Filter Include="NetLite\io_services">
       <UniqueIdentifier>{46a0ff9a-f5b5-4b59-a81e-c5558738307a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="NetLite\detail">
+      <UniqueIdentifier>{3698b680-27bc-4864-957d-e2b6b20a5876}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\NetLite\ip\address.hpp">
@@ -95,6 +98,12 @@
     </ClInclude>
     <ClInclude Include="..\NetLite\io_services\win_iocp_operation.hpp">
       <Filter>NetLite\io_services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\detail\buffer_sequence_adapter.hpp">
+      <Filter>NetLite\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NetLite\mutablebuf.hpp">
+      <Filter>NetLite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
