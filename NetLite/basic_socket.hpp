@@ -16,6 +16,8 @@
 #include "NetLite/socket_types.hpp"
 #include "NetLite/socket_base.hpp"
 #include "NetLite/socket_ops.hpp"
+#include "NetLite/mutablebuf.hpp"
+#include "NetLite/detail/buffer_sequence_adapter.hpp"
 
 namespace NetLite{
 
@@ -176,9 +178,15 @@ public:
         holdsSocket(native_socket);
         switch (protocol.type())
         {
-        case SOCK_STREAM: _state = socket_ops::stream_oriented; break;
-        case SOCK_DGRAM: _state  = socket_ops::datagram_oriented; break;
-        default: _state = 0; break;
+        case SOCK_STREAM: 
+            _state = socket_ops::stream_oriented; 
+            break;
+        case SOCK_DGRAM: 
+            _state  = socket_ops::datagram_oriented; 
+            break;
+        default: 
+            _state = 0; 
+            break;
         }
         if (!ec)
             _open = true;
@@ -381,13 +389,25 @@ public:
      * @par Example
      * To send a single data buffer use the @ref buffer function as follows:
      * @code
-     * socket.send(mutable_buffer(data, size), 0);
+     * std::string str = "message";
+     * std::vector<std::string> sends;
+     * sends.push_back(str);
+     * socket.send(sends, 0);
      * @endcode
      * See the @ref buffer documentation for information on sending multiple
      * data in one go, and how to use it with arrays ,std::string or
      * std::vector.
      */
-    std::size_t send(const std::vector<char>& buffers, socket_base::message_flags flags = 0)
+    template<typename ConstBufferSequence>
+    std::size_t send(const ConstBufferSequence& buffers, socket_base::message_flags flags = 0)
+    {
+        std::error_code ec;
+        std::size_t len = this->send(buffers, flags, ec);
+        throw_if(ec, "send");
+        return len;
+    }
+
+    std::size_t send(const constbuf& buffers, socket_base::message_flags flags = 0)
     {
         std::error_code ec;
         std::size_t len = this->send(buffers, flags, ec);
@@ -413,13 +433,29 @@ public:
      * Consider using the @ref write function if you need to ensure that all data
      * is written before the blocking operation completes.
      */
-    std::size_t send(const std::vector<char>& buffers, socket_base::message_flags flags, std::error_code& ec)
+    template<typename ConstBufferSequence>
+    std::size_t send(const ConstBufferSequence& buffers, socket_base::message_flags flags, std::error_code& ec)
+    {
+        if ((_state & socket_ops::stream_oriented))
+        {
+            buffer_sequence_adapter<constbuf,ConstBufferSequence> bufs(buffers);
+            return socket_ops::send(native_handle(), bufs.buffers(), bufs.count(), flags, ec);
+        }
+        else
+        {
+            std::error_code ec = make_error_code(std::errc::address_family_not_supported);
+            throw_if(ec, "send");
+        }
+        return 0;
+    }
+
+    std::size_t send(const constbuf& buffers, socket_base::message_flags flags, std::error_code& ec)
     {
         if ((_state & socket_ops::stream_oriented))
         {
             socket_ops::buf sendBuf;
             socket_ops::init_buf(sendBuf, buffers.data(), buffers.size());
-            return socket_ops::send(native_handle(),&sendBuf ,1, flags, ec);
+            return socket_ops::send(native_handle(), &sendBuf, 1, flags, ec);
         }
         else
         {
@@ -460,7 +496,16 @@ public:
      * multiple buffers in one go, and how to use it with arrays, boost::array or
      * std::vector.
      */
-    std::size_t receive(std::vector<char>& buffers, socket_base::message_flags flags = 0)
+    template <typename MutableBufferSequence>
+    std::size_t receive(const MutableBufferSequence& buffers, socket_base::message_flags flags = 0)
+    {
+        std::error_code ec;
+        std::size_t result = this->receive(buffers, ec, flags);
+        throw_if(ec, "receive");
+        return result;
+    }
+
+    std::size_t receive(const mutablebuf& buffers, socket_base::message_flags flags = 0)
     {
         std::error_code ec;
         std::size_t result = this->receive(buffers, ec, flags);
@@ -486,7 +531,23 @@ public:
      * bytes. Consider using the @ref read function if you need to ensure that the
      * requested amount of data is read before the blocking operation completes.
      */
-    std::size_t receive(std::vector<char>& buffers, std::error_code& ec, socket_base::message_flags flags = 0)
+    template <typename MutableBufferSequence>
+    std::size_t receive(const MutableBufferSequence& buffers, std::error_code& ec, socket_base::message_flags flags = 0)
+    {
+        if ((_state & socket_ops::stream_oriented))
+        {
+            buffer_sequence_adapter<mutablebuf, MutableBufferSequence> bufs(buffers);
+            return socket_ops::recv(native_handle(), bufs.buffers(), bufs.count(), flags, ec);
+        }
+        else
+        {
+            std::error_code ec = make_error_code(std::errc::address_family_not_supported);
+            throw_if(ec, "receive address family not suported.");
+        }
+        return 0;
+    }
+
+    std::size_t receive(const mutablebuf& buffers, std::error_code& ec, socket_base::message_flags flags = 0)
     {
         if ((_state & socket_ops::stream_oriented))
         {
@@ -518,7 +579,7 @@ public:
      *
      * @throws std::system_error Thrown on failure.
      */
-    std::size_t send_to(std::vector<char>& buffers
+    std::size_t send_to(mutablebuf& buffers
         , const endpoint_type& destination
         , socket_base::message_flags flags = 0)
     {
@@ -544,7 +605,7 @@ public:
      *
      * @returns The number of bytes sent.
      */
-    std::size_t send_to(std::vector<char>& buffers
+    std::size_t send_to(mutablebuf& buffers
         , const endpoint_type& destination
         , socket_base::message_flags flags
         , std::error_code& ec)
@@ -556,7 +617,7 @@ public:
             socket_ops::init_buf(sendToBuf, buffers.data(), buffers.size());
             return socket_ops::sendto(native_handle()
                 , &sendToBuf
-                , buffers.size()
+                , 1
                 , flags
                 , destination.data()
                 , destination.size()
@@ -584,7 +645,7 @@ public:
      *              Default is 0.
      * @returns The number of bytes received.
      */
-    std::size_t receive_from(std::vector<char>& buffers
+    std::size_t receive_from(mutablebuf& buffers
         , endpoint_type& sender_endpoint
         , socket_base::message_flags flags = 0)
     {
@@ -611,7 +672,7 @@ public:
      *
      * @returns The number of bytes received.
      */
-    std::size_t receive_from(std::vector<char>& buffers
+    std::size_t receive_from(mutablebuf& buffers
         , endpoint_type& sender_endpoint
         , socket_base::message_flags flags
         , std::error_code& ec)
@@ -622,7 +683,7 @@ public:
         std::size_t bytes_recvd = socket_ops::sync_recvfrom(native_handle()
             , _state
             , &recvFromBuf
-            , buffers.size()
+            , 1
             , flags
             , sender_endpoint.data()
             , &addr_len
@@ -882,7 +943,7 @@ public:
      * buffers in one go, and how to use it with arrays, std::array or
      * std::vector.
      */
-    void async_send(std::vector<char>& buffers, async_send_handler& handler)
+    void async_send(mutablebuf& buffers, async_send_handler& handler)
     {
         this->async_send(buffers, 0, handler);
     }
@@ -920,7 +981,7 @@ public:
      * buffers in one go, and how to use it with arrays, std::array or
      * std::vector.
      */
-    void async_send(std::vector<char>& buffers, socket_base::message_flags flags, async_send_handler& handler)
+    void async_send(mutablebuf& buffers, socket_base::message_flags flags, async_send_handler& handler)
     {
         if ((_state & socket_ops::stream_oriented))
         {
@@ -967,7 +1028,7 @@ public:
      * multiple buffers in one go, and how to use it with arrays, boost::array or
      * std::vector.
      */
-    void async_receive(std::vector<char>& buffers, async_recv_handler& handler)
+    void async_receive(mutablebuf& buffers, async_recv_handler& handler)
     {
 
         this->async_receive(buffers, 0, handler);
@@ -1008,7 +1069,7 @@ public:
      * multiple buffers in one go, and how to use it with arrays, boost::array or
      * std::vector.
      */
-    void async_receive(std::vector<char>& buffers, socket_base::message_flags flags, async_recv_handler& handler)
+    void async_receive(mutablebuf& buffers, socket_base::message_flags flags, async_recv_handler& handler)
     {
         if ((_state & socket_ops::stream_oriented))
         {
@@ -1056,7 +1117,7 @@ public:
      * buffers in one go, and how to use it with arrays, std::array or
      * std::vector.
      */
-    void async_send_to(std::vector<char>& buffers
+    void async_send_to(mutablebuf& buffers
         , const endpoint_type& destination
         , async_send_handler& handler)
     {
@@ -1088,7 +1149,7 @@ public:
      * );
      * @endcode
      */
-    void async_send_to(std::vector<char>& buffers
+    void async_send_to(mutablebuf& buffers
         , const endpoint_type& destination
         , socket_base::message_flags flags
         , async_send_handler& handler)
@@ -1138,7 +1199,7 @@ public:
      * multiple buffers in one go, and how to use it with arrays, std::array or
      * std::vector.
      */
-    void async_receive_from(std::vector<char>& buffers
+    void async_receive_from(mutablebuf& buffers
         , endpoint_type& sender_endpoint
         , async_recv_handler& handler)
     {
@@ -1170,7 +1231,7 @@ public:
      *   std::size_t bytes_transferred // Number of bytes received.
      * ); @endcode
      */
-    void async_receive_from(std::vector<char>& buffers
+    void async_receive_from(mutablebuf& buffers
         , endpoint_type& sender_endpoint
         , socket_base::message_flags flags
         , async_recv_handler& handler)
@@ -1751,6 +1812,31 @@ public:
         return bHasPendingConnection;
     }
 
+    state_return has_state(socket_state state, std::error_code& ec)
+    {
+        // Check the status of the state
+        int32_t SelectStatus = 0;
+        switch (state)
+        {
+        case socket_state::readable:
+            SelectStatus = socket_ops::poll_read(native_handle(), _state, 10, ec);
+            break;
+
+        case socket_state::writable:
+            SelectStatus = socket_ops::poll_write(native_handle(), _state, 10, ec);
+            break;
+
+        case socket_state::haserror:
+            SelectStatus = socket_ops::poll_error(native_handle(), _state, 10, ec);
+            break;
+        }
+
+        // if the select returns a positive number,
+        // the socket had the state, 
+        // 0 means didn't have it, 
+        // and negative is API error condition (not socket's error state)
+        return SelectStatus > 0 ? state_return::Yes : (SelectStatus == 0 ? state_return::No : state_return::EncounteredError);
+    }
 protected:
     void holdsSocket(native_handle_type native_socket)
     {
@@ -1778,32 +1864,6 @@ protected:
         this->_open = other._open;
         this->_state = other._state;
         this->_protocol = other._protocol;
-    }
-
-    state_return has_state(socket_state state, std::error_code& ec)
-    {
-        // Check the status of the state
-        int32 SelectStatus = 0;
-        switch (state)
-        {
-        case socket_state::readable:
-            SelectStatus = socket_ops::poll_read(native_handle(), _state, ec);
-            break;
-
-        case socket_state::writable:
-            SelectStatus = socket_ops::poll_write(native_handle(), _state, ec);
-            break;
-
-        case socket_state::haserror:
-            SelectStatus = socket_ops::poll_error(native_handle(), _state, ec);
-            break;
-        }
-
-        // if the select returns a positive number,
-        // the socket had the state, 
-        // 0 means didn't have it, 
-        // and negative is API error condition (not socket's error state)
-        return SelectStatus > 0 ? state_return::Yes :(SelectStatus == 0 ? state_return::No : state_return::EncounteredError);
     }
 private:
 

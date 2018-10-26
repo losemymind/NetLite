@@ -36,7 +36,6 @@
     <ClInclude Include="..\NetLite\ip\endpoint.hpp" />
     <ClInclude Include="..\NetLite\ip\multicast.hpp" />
     <ClInclude Include="..\NetLite\mutablebuf.hpp" />
-    <ClInclude Include="..\NetLite\NetLite.hpp" />
     <ClInclude Include="..\NetLite\net_error_code.hpp" />
     <ClInclude Include="..\NetLite\socket_base.hpp" />
     <ClInclude Include="..\NetLite\socket_ops.hpp" />

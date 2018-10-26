@@ -148,7 +148,6 @@ protected:
 
 typedef basic_mutablebuf mutablebuf;
 
-
 inline mutablebuf make_mutablebuf(std::vector<char>& buffers)
 {
     return mutablebuf(buffers.data(), buffers.size());
@@ -169,6 +168,10 @@ inline mutablebuf make_mutablebuf(std::basic_string<unsigned char>& buffers)
     return mutablebuf(&(buffers[0]), buffers.size());
 }
 
+inline mutablebuf make_mutablebuf(mutablebuf& buffers)
+{
+    return buffers;
+}
 
 /**
     * Holds a buffer that cannot be modified.
@@ -343,6 +346,33 @@ inline constbuf make_constbuf(const mutablebuf& buffers)
 {
     return constbuf(buffers.data(), buffers.size());
 }
+
+inline constbuf make_constbuf(const constbuf& buffers)
+{
+    return buffers;
+}
+
+template<typename BufferT, typename SrcT>
+struct make_buffer {};
+
+template<typename SrcT>
+struct make_buffer<mutablebuf, SrcT>
+{
+    static mutablebuf make(SrcT& buffer)
+    {
+        return make_mutablebuf((std::vector<char>&)buffer);
+    }
+};
+
+template<typename SrcT>
+struct make_buffer<constbuf, SrcT>
+{
+    static constbuf make(const SrcT& buffer)
+    {
+        return make_constbuf(buffer);
+    }
+};
+
 
 } // namespace NetLite
 #endif // END OF NETLITE_MUTABLEBUF_HPP

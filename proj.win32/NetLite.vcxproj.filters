@@ -90,9 +90,6 @@
     <ClInclude Include="..\NetLite\winsock_init.hpp">
       <Filter>NetLite</Filter>
     </ClInclude>
-    <ClInclude Include="..\NetLite\NetLite.hpp">
-      <Filter>NetLite</Filter>
-    </ClInclude>
     <ClInclude Include="..\NetLite\io_services\win_iocp_io_context.hpp">
       <Filter>NetLite\io_services</Filter>
     </ClInclude>

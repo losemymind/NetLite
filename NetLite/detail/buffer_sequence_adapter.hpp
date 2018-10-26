@@ -15,6 +15,7 @@ public:
 protected:
     typedef WSABUF native_buffer_type;
 
+    template<typename Buffer>
     static void init_native_buffer(WSABUF& buf, const mutablebuf& buffer)
     {
         buf.buf = static_cast<char*>(buffer.data());
@@ -62,8 +63,7 @@ protected:
 // Helper class to translate buffers into the native buffer representation.
 // Buffers type of (std::vector<std::string> or std::vector<std::vector<char|unsigned char>>)
 template <typename Buffer, typename Buffers>
-class buffer_sequence_adapter
-    : buffer_sequence_adapter_base
+class buffer_sequence_adapter : buffer_sequence_adapter_base
 {
 public:
     explicit buffer_sequence_adapter(const Buffers& buffer_sequence)
@@ -87,26 +87,6 @@ public:
         return total_buffer_size_;
     }
 
-    bool all_empty() const
-    {
-        return total_buffer_size_ == 0;
-    }
-
-    static bool all_empty(const Buffers& buffer_sequence)
-    {
-        return buffer_sequence_adapter::all_empty(buffer_sequence.begin(), buffer_sequence.end());
-    }
-
-    static void validate(const Buffers& buffer_sequence)
-    {
-        buffer_sequence_adapter::validate(buffer_sequence.begin(), buffer_sequence.end());
-    }
-
-    static Buffer first(const Buffers& buffer_sequence)
-    {
-        return buffer_sequence_adapter::first(buffer_sequence.begin(), buffer_sequence.end());
-    }
-
 private:
     template <typename Iterator>
     void init(Iterator begin, Iterator end)
@@ -114,47 +94,11 @@ private:
         Iterator iter = begin;
         for (; iter != end && count_ < max_buffers; ++iter, ++count_)
         {
-            Buffer buffer(*iter);
+            Buffer buffer = make_buffer<Buffer, decltype((*iter))>::make((*iter));
             init_native_buffer(buffers_[count_], buffer);
             total_buffer_size_ += buffer.size();
         }
     }
-
-    template <typename Iterator>
-    static bool all_empty(Iterator begin, Iterator end)
-    {
-        Iterator iter = begin;
-        std::size_t i = 0;
-        for (; iter != end && i < max_buffers; ++iter, ++i)
-            if (Buffer(*iter).size() > 0)
-                return false;
-        return true;
-    }
-
-    template <typename Iterator>
-    static void validate(Iterator begin, Iterator end)
-    {
-        Iterator iter = begin;
-        for (; iter != end; ++iter)
-        {
-            Buffer buffer(*iter);
-            buffer.data();
-        }
-    }
-
-    template <typename Iterator>
-    static Buffer first(Iterator begin, Iterator end)
-    {
-        Iterator iter = begin;
-        for (; iter != end; ++iter)
-        {
-            Buffer buffer(*iter);
-            if (buffer.size() != 0)
-                return buffer;
-        }
-        return Buffer();
-    }
-
     native_buffer_type buffers_[max_buffers];
     std::size_t count_;
     std::size_t total_buffer_size_;

@@ -15,8 +15,6 @@ namespace NetLite{
 class socket_base
 {
 public:
-    socket_base() { }
-
     virtual ~socket_base(){ }
 
     /// Different ways a socket may be shutdown.
@@ -85,10 +83,11 @@ public:
 
     /// The maximum length of the queue of pending incoming connections.
     static const int max_connections = NET_OS_DEF(SOMAXCONN);
+    /// The maximum length of the queue of pending incoming connections.
+    static const int max_listen_connections = NET_OS_DEF(SOMAXCONN);
 
 public: 
     /// socket options,see NetLite::socket_base
-
 
     /**
      * Socket option to permit sending of broadcast messages.
@@ -379,6 +378,64 @@ public:
      */
     typedef NetLite::socket_option::linger  <NET_OS_DEF(SOL_SOCKET), NET_OS_DEF(SO_LINGER)> linger;
 
+   /**
+    * Socket option for putting received out-of-band data inline.
+    * Implements the SOL_SOCKET/SO_OOBINLINE socket option.
+    *
+    * @par Examples
+    * Setting the option:
+    * @code
+    * boost::asio::ip::tcp::socket socket(io_context);
+    * ...
+    * boost::asio::socket_base::out_of_band_inline option(true);
+    * socket.set_option(option);
+    * @endcode
+    *
+    * @par
+    * Getting the current option value:
+    * @code
+    * boost::asio::ip::tcp::socket socket(io_context);
+    * ...
+    * boost::asio::socket_base::out_of_band_inline option;
+    * socket.get_option(option);
+    * bool value = option.value();
+    * @endcode
+    *
+    * @par Concepts:
+    * Socket_Option, Boolean_Socket_Option.
+    */
+    NetLite::socket_option::boolean< NET_OS_DEF(SOL_SOCKET), NET_OS_DEF(SO_OOBINLINE)> out_of_band_inline;
+
+   /**
+    * Socket option to report aborted connections on accept.
+    * Implements a custom socket option that determines whether or not an accept
+    * operation is permitted to fail with boost::asio::error::connection_aborted.
+    * By default the option is false.
+    *
+    * @par Examples
+    * Setting the option:
+    * @code
+    * boost::asio::ip::tcp::acceptor acceptor(io_context);
+    * ...
+    * boost::asio::socket_base::enable_connection_aborted option(true);
+    * acceptor.set_option(option);
+    * @endcode
+    *
+    * @par
+    * Getting the current option value:
+    * @code
+    * boost::asio::ip::tcp::acceptor acceptor(io_context);
+    * ...
+    * boost::asio::socket_base::enable_connection_aborted option;
+    * acceptor.get_option(option);
+    * bool is_set = option.value();
+    * @endcode
+    *
+    * @par Concepts:
+    * Socket_Option, Boolean_Socket_Option.
+    */
+    typedef NetLite::socket_option::boolean< NetLite::custom_socket_option_level, NetLite::enable_connection_aborted_option> enable_connection_aborted;
+
     /**
      * Socket option for determining whether an IPv6 socket supports IPv6
      * communication only.
@@ -408,6 +465,8 @@ public:
      */
     typedef NetLite::socket_option::boolean< IPPROTO_IPV6, IPV6_V6ONLY> v6_only;
 
+protected:
+    socket_base() { }
 };
 
 } // namespace NetLite
